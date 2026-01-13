@@ -1,5 +1,5 @@
 import fetch from 'node-fetch'
-import { Product } from '../Model/product.js'
+import { Product } from '../Model/Product.js'
 export  const saveproduct = async(req,res)=>{
    try{
 

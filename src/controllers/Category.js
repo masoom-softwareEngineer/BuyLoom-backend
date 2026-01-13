@@ -1,5 +1,4 @@
 import fetch from 'node-fetch'
-import { Product } from '../Model/product.js'
 
 export const subCategory = async(req, res)=>{
    const name =  req.params.name
