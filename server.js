@@ -1,11 +1,12 @@
 import express from 'express';
+import 'dotenv/config'
 import { dbconnect } from './src/config/db.js';
 import router from './src/routes/router.js';
 import routercategory from './src/routes/categoryRouter.js';
 import cors from 'cors'
 dbconnect()
 
-const port = 9000
+const port = process.env.PORT || 9000
 const app = express();
 app.use(cors())
 app.use(express.json())
