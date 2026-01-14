@@ -13,6 +13,7 @@ const transporter = nodemailer.createTransport({
 })
 export const signupcontroller = async (req, res) => {
   try {
+    console.log('Signup request recived')
     const { name, email, password } = req.body;
     const duplicateEmail = await SignupUser.findOne({ email: email });
     
