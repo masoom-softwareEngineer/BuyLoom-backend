@@ -14,9 +14,8 @@ app.use('/api',router)
 app.get('/',(req,res)=>{
   res.send('hello qudratullah')
 })
-app.use('/api/category', routercategory)
 app.use('/api/product/category', routercategory)
-app.use('/api/Orderproduct/', routercategory)
+app.use('/api/Orderproduct/', router)
 app.use('/authentication',router)
 
 app.listen(port, ()=>{

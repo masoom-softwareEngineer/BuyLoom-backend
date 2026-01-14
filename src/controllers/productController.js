@@ -39,3 +39,12 @@ export const readproduct = async(req,res)=>{
         res.status(500).json({error: err.message})
     }
 }
+export const orderproduct = async(req, res)=>{
+    try{
+        const id = req.params.id
+        const orderid = await Product.findById(id)
+        res.status(200).json({orderid})
+    }catch(err){
+        res.status(500).json({error: err.message})
+    }
+}
