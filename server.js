@@ -18,6 +18,6 @@ app.use('/api/product/category', routercategory)
 app.use('/api/Orderproduct/', router)
 app.use('/authentication',router)
 
-app.listen(port, ()=>{
-  console.log(`backend is online ${port}`)
-})
+app.listen(port, "0.0.0.0", () => {
+  console.log(`backend is online ${port}`);
+});
