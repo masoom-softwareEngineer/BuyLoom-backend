@@ -29,7 +29,6 @@ export const signupcontroller = async (req, res) => {
       verificationCode: verificatoncode
     });
     const saveuser = await newuser.save();
-    console.log("User saved attempting to send email ...")
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: email,
@@ -37,11 +36,9 @@ export const signupcontroller = async (req, res) => {
       text: `Your verification code is ${verificatoncode}`,
       html: `<p>Your verification code is <strong>${verificatoncode}</strong></p>`
     })
-    console.log("Email sent successfully")
     res.status(200).json({ message: "Your registered Successfully. Verification code sent to email"});
   } catch (err) {
-    console.error("Detailed Email Error", err)
-    res.status(400).json({message: "Email could not be delivered. Check the address", error: err.message});
+    res.status(400).json({message: "Email could not be delivered. Check the address"});
   }
 };
 export const verifyEmail = async(req,res)=>{
