@@ -1,16 +1,16 @@
 import SignupUser from "../Model/UserSchema.js";
 import bcrypt from "bcrypt";
 import dotenv from 'dotenv'
-import nodemailer from 'nodemailer'
+// import nodemailer from 'nodemailer'
 import jwt from 'jsonwebtoken'
 dotenv.config()
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth:{
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-})
+// const transporter = nodemailer.createTransport({
+//   service: "gmail",
+//   auth:{
+//     user: process.env.EMAIL_USER,
+//     pass: process.env.EMAIL_PASS,
+//   },
+// })
 export const signupcontroller = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -29,16 +29,17 @@ export const signupcontroller = async (req, res) => {
       verificationCode: verificatoncode
     });
     const saveuser = await newuser.save();
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: "Email Verification",
-      text: `Your verification code is ${verificatoncode}`,
-      html: `<p>Your verification code is <strong>${verificatoncode}</strong></p>`
-    })
+    // await transporter.sendMail({
+    //   from: process.env.EMAIL_USER,
+    //   to: email,
+    //   subject: "Email Verification",
+    //   text: `Your verification code is ${verificatoncode}`,
+    //   html: `<p>Your verification code is <strong>${verificatoncode}</strong></p>`
+    // })
     res.status(200).json({ message: "Your registered Successfully. Verification code sent to email"});
   } catch (err) {
-    res.status(400).json({message: "Email could not be delivered. Check the address"});
+   console.log(err);
+   return res.status(500).json({error: err.message})
   }
 };
 export const verifyEmail = async(req,res)=>{
