@@ -1,61 +1,51 @@
 import SignupUser from "../Model/UserSchema.js";
 import bcrypt from "bcrypt";
-import dotenv from 'dotenv'
-dotenv.config()
-import nodemailer from 'nodemailer'
-import jwt from 'jsonwebtoken'
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false, 
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-  tls: {
-    rejectUnauthorized: false 
-  }
-});
+import dotenv from 'dotenv';
+import { Resend } from "resend";
+import jwt from 'jsonwebtoken';
+dotenv.config();
+const resend = new Resend(process.env.RESEND_API_KEY);
 export const signupcontroller = async (req, res) => {
   try {
-    console.log('Signup request recived')
     const { name, email, password } = req.body;
     const duplicateEmail = await SignupUser.findOne({ email: email });
-    
     if (duplicateEmail) {
-      return res.status(400).json({ message: "Invalid Email" });
+      return res.status(400).json({ message: 'Invalid Email' });
     }
-
     const salt = await bcrypt.genSalt(10);
     const hashpassword = await bcrypt.hash(password, salt);
-    const verificatoncode = Math.floor(100000 + Math.random() * 900000);
+    const verificationcode = Math.floor(100000 + Math.random() * 900000);
 
+    
     const newuser = new SignupUser({
       name,
       email,
       password: hashpassword,
       verified: false,
-      verificationCode: verificatoncode
+      verificationCode: verificationcode
     });
 
-    const saveuser = await newuser.save();
+    await newuser.save();
     console.log("User saved successfully ✅");
-
-    // ای میل بھیجنے کا عمل (بغیر await کے تاکہ سرور نہ رکے)
-    transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: "Email Verification",
-      text: `Your verification code is ${verificatoncode}`,
-      html: `<p>Your verification code is <strong>${verificatoncode}</strong></p>`
-    }).then(() => {
+    try {
+      await resend.emails.send({
+        from: 'onboarding@resend.dev',
+        to: email,
+        subject: 'Verification Code',
+        html: `<h3>Welcome to BuyLoom!</h3>
+               <p>Your verification code is: <strong>${verificationcode}</strong></p>`
+      });
       console.log("Email sent successfully 📧");
-    }).catch((err) => {
-      console.log("Email failed but user is saved. Error:", err.message);
+    } catch (emailError) {
+      console.error("Email failed but user is saved:", emailError.message);
+      return res.status(201).json({ 
+        message: "Account created, but failed to send email. Please contact support.",
+        userId: newuser._id 
+      });
+    }
+    return res.status(200).json({ 
+      message: "Registration successful! Please check your email for the code." 
     });
-return res.status(200).json({ 
-  message: "Your registered Successfully. Verification code sent to email" 
-});
     
   } catch (err) {
     console.error("Signup Error:", err.message);
