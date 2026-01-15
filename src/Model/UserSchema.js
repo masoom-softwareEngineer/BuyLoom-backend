@@ -23,7 +23,7 @@ const Schemauser = new mongoose.Schema({
     createdAt:{
         type: Date,
         default: Date.now,
-        expires: 8000
+        expires: 500000
     }
     
 
