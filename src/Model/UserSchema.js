@@ -13,13 +13,7 @@ const Schemauser = new mongoose.Schema({
         type:String,
         required: true
     },
-    verified:{
-        type: Boolean,
-        default: false
-    },
-    verificationCode:{
-        type: Number
-    },
+   
     createdAt:{
         type: Date,
         default: Date.now,
